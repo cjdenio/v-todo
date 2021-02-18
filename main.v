@@ -1,6 +1,9 @@
 import pg
 import vweb
 
+import net.urllib
+import os { getenv }
+
 struct App {
 	vweb.Context
 mut:
@@ -12,13 +15,17 @@ fn main() {
 }
 
 pub fn (mut app App) init_once() {
+	url := urllib.parse(getenv("DB_URL")) or { panic(err) }
+
 	app.db = pg.connect(pg.Config {
-		host: "localhost",
-		port: 5432,
-		user: "postgres",
-		password: "postgres",
-		dbname: "postgres"
-	}) or { panic(err) }
+		host: url.hostname(),
+		port: url.port().int(),
+		user: url.user.username,
+		password: url.user.password,
+		dbname: url.path[1..]
+	}) or {
+		panic(err)
+	}
 
 	app.db.exec("create table if not exists items (id integer primary key, text varchar)") or { panic(err) }
 }

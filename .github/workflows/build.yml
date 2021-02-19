@@ -6,8 +6,7 @@ jobs:
     name: Build
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          git clone https://github.com/vlang/v
-          make
+      - run: git clone https://github.com/vlang/v /v
+      - run: make
         working-directory: /v
       - run: /v/v main.v

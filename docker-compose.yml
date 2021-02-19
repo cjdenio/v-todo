@@ -19,5 +19,13 @@ services:
       POSTGRES_USER: postgres
     volumes:
       - "db_volume:/var/lib/postgresql/data"
+  pgweb:
+    image: sosedoff/pgweb
+    ports:
+      - "3001:8081"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+    depends_on:
+      - db
 volumes:
   db_volume:
